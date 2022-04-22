@@ -14,7 +14,7 @@ const Accordion = ({ items }) => {
 		return (
 			//used Fragment so we can do multiple div in a return
 			<React.Fragment key={item.title}>
-				{" "}
+				
 				{/*every element in ajsx list needs a key*/}
 				<div
 					className={`title ${active}`}
@@ -23,7 +23,7 @@ const Accordion = ({ items }) => {
 					<i className="dropdown icon"></i>
 					{item.title}
 				</div>
-				<div className={`content ${active}`}>``
+				<div className={`content ${active}`}>
 					<p>{item.content}</p>
 				</div>
 			</React.Fragment>
