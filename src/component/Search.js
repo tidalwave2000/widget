@@ -4,7 +4,16 @@ import axios from "axios";
 const Search = () => {
 	const [term, setTerm] = useState("programming");
 	const [results, setResults] = useState([]);
-	console.log("I RUN WITH EVERY RENDER");
+	const [debouncedTerm, setDebouncedTerm] = useState(term);
+	//introduce another useEffect to avoid a bug later down the line that will render multiple time risking a infinite loop
+	useEffect(() => {
+		const timerId = setTimeout(() => {
+			setDebouncedTerm(term);
+		}, 1000);
+		return () => {
+			clearTimeout(timerId);
+		};
+	}, [term]);
 
 	useEffect(() => {
 		const search = async () => {
@@ -14,30 +23,34 @@ const Search = () => {
 					list: "search",
 					origin: "*",
 					format: "json",
-					srsearch: term,
+					srsearch: debouncedTerm,
 				},
 			});
 			//cause a rerender and update the results array
 			setResults(data.query.search);
 		};
+		if (debouncedTerm) {
+			search();
+		}
+	}, [debouncedTerm]);
+	//if there is a term and a results then do a search
 
-		search();
-	}, [term]); //indicates that useEffects will rUN at the render
+	//if there wasn't a result or term clearout the search box and delay the search of the next search keyword
 
 	const renderedResults = results.map((result) => {
 		return (
 			<div key={result.pageid} className="item">
-                <div className="right floated content">
-                    <a 
-                    className="ui button"
-                    href={`http://en.wikipedia.org?curid=${result.pageid}`}
-                    >Go</a>
-                </div>
+				<div className="right floated content">
+					<a
+						className="ui button"
+						href={`http://en.wikipedia.org?curid=${result.pageid}`}
+					>
+						Go
+					</a>
+				</div>
 				<div className="content">
-                    
 					<div className="header">{results.title}</div>
-                    <span dangerouslySetInnerHTML={{__html: result.snippet}}></span>
-					
+					<span dangerouslySetInnerHTML={{ __html: result.snippet }}></span>
 				</div>
 			</div>
 		);
