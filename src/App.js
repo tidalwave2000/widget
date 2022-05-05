@@ -3,6 +3,9 @@ import Accordion from "./component/Accordion";
 import Search from "./component/Search";
 import Dropdown from "./component/Dropdown";
 import Translate from "./component/Translate";
+import Route from "./component/Route";
+import Header from "./component/Header";
+
 
 const items = [
 	{
@@ -33,10 +36,31 @@ const options = [
 		value: "blue",
 	},
 ];
+
+//App navigation without using React-Router
+
 const App = () => {
+	const [selected, setSelected] = useState(options[0]);
 	return (
 		<div>
-			<Translate />
+			<Header />
+			<Route path="/">
+				<Accordion items={items} />
+			</Route>
+			<Route path="/list">
+				<Search />
+			</Route>
+			<Route path="/dropdown">
+				<Dropdown
+					label="Select a color"
+					options={options}
+					selected={selected}
+					onSelectedChange={setSelected}
+				/>
+			</Route>
+			<Route path="/translate">
+				<Translate />
+			</Route>
 		</div>
 	);
 };
